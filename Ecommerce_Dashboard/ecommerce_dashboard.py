@@ -1,231 +1,343 @@
-Python 3.13.2 (tags/v3.13.2:4f8bb39, Feb  4 2025, 15:23:48) [MSC v.1942 64 bit (AMD64)] on win32
-Type "help", "copyright", "credits" or "license()" for more information.
+# =========================================================
+# COMPLETE EXCEL DATA SUMMARY DASHBOARD
+# USING PANDAS + PLOTLY
+# =========================================================
 
-============================ RESTART: C:/Users/user/AppData/Local/Programs/Python/Python313/git_hub.py ============================
+# INSTALL LIBRARIES FIRST
+# pip install pandas plotly openpyxl
 
-============================ RESTART: C:/Users/user/AppData/Local/Programs/Python/Python313/git_hub.py ============================
+# =========================================================
+# IMPORT LIBRARIES
+# =========================================================
 
-=================== RESTART: C:/Users/user/AppData/Local/Programs/Python/Python313/data-visualization-project.py ==================
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
 
-============================== RESTART: C:\Users\user\AppData\Local\Programs\Python\Python313\new2.py =============================
+# =========================================================
+# LOAD EXCEL FILE
+# =========================================================
 
-================ FIRST 5 ROWS ================
+file_path = r"C:/Users/user/Downloads/38134 (1).xlsx"
 
-  Order ID              Order Date  ... Quantity   Profit
-0  ORD1000 2024-01-01 00:00:00.000  ...        5   149.93
-1  ORD1001 2024-01-04 16:02:24.724  ...        3   876.90
-2  ORD1002 2024-01-08 08:04:49.447  ...        7   153.73
-3  ORD1003 2024-01-12 00:07:14.171  ...        2  1003.94
-4  ORD1004 2024-01-15 16:09:38.894  ...        9    98.54
+df = pd.read_excel(file_path)
 
-[5 rows x 9 columns]
+# =========================================================
+# SHOW BASIC DATA
+# =========================================================
 
-================ DATA INFO ================
+print("\n================ FIRST 5 ROWS ================\n")
+print(df.head())
 
-<class 'pandas.DataFrame'>
-RangeIndex: 200 entries, 0 to 199
-Data columns (total 9 columns):
- #   Column            Non-Null Count  Dtype         
----  ------            --------------  -----         
- 0   Order ID          200 non-null    str           
- 1   Order Date        200 non-null    datetime64[us]
- 2   Customer Name     200 non-null    str           
- 3   City              200 non-null    str           
- 4   Product Category  200 non-null    str           
- 5   Product Name      200 non-null    str           
- 6   Sales Amount      200 non-null    int64         
- 7   Quantity          200 non-null    int64         
- 8   Profit            200 non-null    float64       
-dtypes: datetime64[us](1), float64(1), int64(2), str(5)
-memory usage: 21.5 KB
-None
+print("\n================ DATA INFO ================\n")
+print(df.info())
 
-================ NULL VALUES ================
+print("\n================ NULL VALUES ================\n")
+print(df.isnull().sum())
 
-Order ID            0
-Order Date          0
-Customer Name       0
-City                0
-Product Category    0
-Product Name        0
-Sales Amount        0
-Quantity            0
-Profit              0
-dtype: int64
+print("\n================ STATISTICAL SUMMARY ================\n")
+print(df.describe())
 
-================ STATISTICAL SUMMARY ================
+# =========================================================
+# CLEAN COLUMN NAMES
+# =========================================================
 
-                Order Date  Sales Amount    Quantity       Profit
-count                  200    200.000000  200.000000   200.000000
-mean   2024-12-31 00:00:00   2840.920000    4.725000   521.431550
-min    2024-01-01 00:00:00    504.000000    1.000000    26.150000
-25%    2024-07-01 12:00:00   1645.750000    2.000000   236.340000
-50%    2024-12-31 00:00:00   2996.500000    5.000000   485.770000
-75%    2025-07-01 12:00:00   3850.000000    7.000000   771.265000
-max    2025-12-31 00:00:00   4995.000000    9.000000  1353.510000
-std                    NaN   1283.591394    2.555785   328.656056
+df.columns = df.columns.str.strip()
 
-================ COLUMN NAMES ================
+print("\n================ COLUMN NAMES ================\n")
+print(df.columns)
 
-Index(['Order ID', 'Order Date', 'Customer Name', 'City', 'Product Category',
-       'Product Name', 'Sales Amount', 'Quantity', 'Profit'],
-      dtype='str')
+# =========================================================
+# CONVERT DATE COLUMN
+# =========================================================
 
-================ OVERALL SUMMARY ================
+df['Order Date'] = pd.to_datetime(df['Order Date'])
 
-Total Sales      : 568184
-Total Profit     : 104286.31
-Total Quantity   : 945
-Total Orders     : 200
+# =========================================================
+# CREATE MONTH COLUMN
+# =========================================================
 
-================================================
-SUMMARY REPORT SAVED SUCCESSFULLY
-File Name : summary_report.xlsx
-================================================
+df['Month'] = df['Order Date'].dt.strftime('%Y-%m')
 
-Cleaned data saved as cleaned_data.xlsx
+# =========================================================
+# OVERALL SUMMARY
+# =========================================================
 
-=========================== RESTART: C:\Users\user\AppData\Local\Programs\Python\Python313\matplotpr1.py ==========================
+total_sales = df['Sales Amount'].sum()
+total_profit = df['Profit'].sum()
+total_quantity = df['Quantity'].sum()
+total_orders = df['Order ID'].nunique()
 
-========== DATASET OVERVIEW ==========
-  Order ID  Order Date Customer_Name  ... Total_Amount Payment Method Order Status
-0  ORD1000  2024-04-07   Sanjana Rao  ...    184100.00            UPI    Delivered
-1  ORD1001  2024-05-02    Riya Verma  ...     44028.00            COD      Shipped
-2  ORD1002  2024-05-08    Riya Verma  ...    116805.30            COD      Shipped
-3  ORD1003  2024-06-06    Amit Singh  ...     37304.60    Credit Card    Cancelled
-4  ORD1004  2024-03-19   Rahul Gupta  ...     89425.95    Credit Card    Delivered
+print("\n================ OVERALL SUMMARY ================\n")
 
-[5 rows x 14 columns]
+print(f"Total Sales      : {total_sales}")
+print(f"Total Profit     : {total_profit}")
+print(f"Total Quantity   : {total_quantity}")
+print(f"Total Orders     : {total_orders}")
 
-========== DATASET SHAPE ==========
-(300, 14)
+# =========================================================
+# CATEGORY WISE SALES
+# =========================================================
 
-========== COLUMN NAMES ==========
-Index(['Order ID', 'Order Date', 'Customer_Name', 'City', 'State', 'Product',
-       'Category', 'Sub-Category', 'Quantity', 'Unit Price', 'Discount',
-       'Total_Amount', 'Payment Method', 'Order Status'],
-      dtype='str')
+category_sales = (
+    df.groupby('Product Category')['Sales Amount']
+    .sum()
+    .reset_index()
+)
 
-========== MISSING VALUES ==========
-Order ID          0
-Order Date        0
-Customer_Name     0
-City              0
-State             0
-Product           0
-Category          0
-Sub-Category      0
-Quantity          0
-Unit Price        0
-Discount          0
-Total_Amount      0
-Payment Method    0
-Order Status      0
-dtype: int64
+fig1 = px.bar(
+    category_sales,
+    x='Product Category',
+    y='Sales Amount',
+    text_auto=True,
+    title='Category Wise Sales'
+)
 
-========== DATA TYPES ==========
-Order ID              str
-Order Date            str
-Customer_Name         str
-City                  str
-State                 str
-Product               str
-Category              str
-Sub-Category          str
-Quantity            int64
-Unit Price          int64
-Discount            int64
-Total_Amount      float64
-Payment Method        str
-Order Status          str
-dtype: object
+fig1.update_layout(
+    title_x=0.5,
+    height=500
+)
 
-========== STATISTICAL SUMMARY ==========
-         Quantity    Unit Price    Discount   Total_Amount
-count  300.000000    300.000000  300.000000     300.000000
-mean     2.946667  25014.350000   10.000000   67057.105167
-std      1.389337  14264.470018    7.094677   50858.988171
-min      1.000000    307.000000    0.000000     782.850000
-25%      2.000000  13562.500000    5.000000   28214.475000
-50%      3.000000  24172.000000   10.000000   53420.300000
-75%      4.000000  37139.250000   15.000000   97920.475000
-max      5.000000  49858.000000   20.000000  196898.250000
+fig1.show()
 
-========== BUSINESS SUMMARY ==========
-Total Sales      : ₹20,117,131.55
-Total Orders     : 300
-Total Customers  : 8
-Top Category     : Fashion
+# =========================================================
+# CATEGORY WISE PROFIT
+# =========================================================
 
-=========================== RESTART: C:\Users\user\AppData\Local\Programs\Python\Python313\matplotpr1.py ==========================
+category_profit = (
+    df.groupby('Product Category')['Profit']
+    .sum()
+    .reset_index()
+)
 
-========== DATASET OVERVIEW ==========
-  Order ID  Order Date Customer_Name  ... Total_Amount Payment Method Order Status
-0  ORD1000  2024-04-07   Sanjana Rao  ...    184100.00            UPI    Delivered
-1  ORD1001  2024-05-02    Riya Verma  ...     44028.00            COD      Shipped
-2  ORD1002  2024-05-08    Riya Verma  ...    116805.30            COD      Shipped
-3  ORD1003  2024-06-06    Amit Singh  ...     37304.60    Credit Card    Cancelled
-4  ORD1004  2024-03-19   Rahul Gupta  ...     89425.95    Credit Card    Delivered
+fig2 = px.bar(
+    category_profit,
+    x='Product Category',
+    y='Profit',
+    text_auto=True,
+    title='Category Wise Profit'
+)
 
-[5 rows x 14 columns]
+fig2.update_layout(
+    title_x=0.5,
+    height=500
+)
 
-========== DATASET SHAPE ==========
-(300, 14)
+fig2.show()
 
-========== COLUMN NAMES ==========
-Index(['Order ID', 'Order Date', 'Customer_Name', 'City', 'State', 'Product',
-       'Category', 'Sub-Category', 'Quantity', 'Unit Price', 'Discount',
-       'Total_Amount', 'Payment Method', 'Order Status'],
-      dtype='str')
+# =========================================================
+# CITY WISE SALES
+# =========================================================
 
-========== MISSING VALUES ==========
-Order ID          0
-Order Date        0
-Customer_Name     0
-City              0
-State             0
-Product           0
-Category          0
-Sub-Category      0
-Quantity          0
-Unit Price        0
-Discount          0
-Total_Amount      0
-Payment Method    0
-Order Status      0
-dtype: int64
+city_sales = (
+    df.groupby('City')['Sales Amount']
+    .sum()
+    .reset_index()
+)
 
-========== DATA TYPES ==========
-Order ID              str
-Order Date            str
-Customer_Name         str
-City                  str
-State                 str
-Product               str
-Category              str
-Sub-Category          str
-Quantity            int64
-Unit Price          int64
-Discount            int64
-Total_Amount      float64
-Payment Method        str
-Order Status          str
-dtype: object
+fig3 = px.pie(
+    city_sales,
+    names='City',
+    values='Sales Amount',
+    title='City Wise Sales Distribution'
+)
 
-========== STATISTICAL SUMMARY ==========
-         Quantity    Unit Price    Discount   Total_Amount
-count  300.000000    300.000000  300.000000     300.000000
-mean     2.946667  25014.350000   10.000000   67057.105167
-std      1.389337  14264.470018    7.094677   50858.988171
-min      1.000000    307.000000    0.000000     782.850000
-25%      2.000000  13562.500000    5.000000   28214.475000
-50%      3.000000  24172.000000   10.000000   53420.300000
-75%      4.000000  37139.250000   15.000000   97920.475000
-max      5.000000  49858.000000   20.000000  196898.250000
+fig3.update_layout(
+    title_x=0.5,
+    height=600
+)
 
-========== BUSINESS SUMMARY ==========
-Total Sales      : ₹20,117,131.55
-Total Orders     : 300
-Total Customers  : 8
-Top Category     : Fashion
+fig3.show()
 
+# =========================================================
+# TOP 10 PRODUCTS BY SALES
+# =========================================================
+
+top_products = (
+    df.groupby('Product Name')['Sales Amount']
+    .sum()
+    .reset_index()
+)
+
+top_products = top_products.sort_values(
+    by='Sales Amount',
+    ascending=False
+).head(10)
+
+fig4 = px.bar(
+    top_products,
+    x='Product Name',
+    y='Sales Amount',
+    text_auto=True,
+    title='Top 10 Products by Sales'
+)
+
+fig4.update_layout(
+    title_x=0.5,
+    height=550
+)
+
+fig4.show()
+
+# =========================================================
+# MONTHLY SALES TREND
+# =========================================================
+
+monthly_sales = (
+    df.groupby('Month')['Sales Amount']
+    .sum()
+    .reset_index()
+)
+
+fig5 = px.line(
+    monthly_sales,
+    x='Month',
+    y='Sales Amount',
+    markers=True,
+    title='Monthly Sales Trend'
+)
+
+fig5.update_layout(
+    title_x=0.5,
+    height=500
+)
+
+fig5.show()
+
+# =========================================================
+# MONTHLY PROFIT TREND
+# =========================================================
+
+monthly_profit = (
+    df.groupby('Month')['Profit']
+    .sum()
+    .reset_index()
+)
+
+fig6 = px.area(
+    monthly_profit,
+    x='Month',
+    y='Profit',
+    title='Monthly Profit Trend'
+)
+
+fig6.update_layout(
+    title_x=0.5,
+    height=500
+)
+
+fig6.show()
+
+# =========================================================
+# QUANTITY DISTRIBUTION
+# =========================================================
+
+fig7 = px.histogram(
+    df,
+    x='Quantity',
+    nbins=20,
+    title='Quantity Distribution'
+)
+
+fig7.update_layout(
+    title_x=0.5,
+    height=500
+)
+
+fig7.show()
+
+# =========================================================
+# SALES VS PROFIT
+# =========================================================
+
+fig8 = px.scatter(
+    df,
+    x='Sales Amount',
+    y='Profit',
+    color='Product Category',
+    size='Quantity',
+    title='Sales vs Profit'
+)
+
+fig8.update_layout(
+    title_x=0.5,
+    height=600
+)
+
+fig8.show()
+
+# =========================================================
+# CUSTOMER WISE SALES
+# =========================================================
+
+customer_sales = (
+    df.groupby('Customer Name')['Sales Amount']
+    .sum()
+    .reset_index()
+)
+
+customer_sales = customer_sales.sort_values(
+    by='Sales Amount',
+    ascending=False
+).head(10)
+
+fig9 = px.bar(
+    customer_sales,
+    x='Customer Name',
+    y='Sales Amount',
+    text_auto=True,
+    title='Top Customers by Sales'
+)
+
+fig9.update_layout(
+    title_x=0.5,
+    height=550
+)
+
+fig9.show()
+
+# =========================================================
+# SAVE SUMMARY REPORT
+# =========================================================
+
+summary_df = pd.DataFrame({
+
+    'Metric': [
+        'Total Sales',
+        'Total Profit',
+        'Total Quantity',
+        'Total Orders'
+    ],
+
+    'Value': [
+        total_sales,
+        total_profit,
+        total_quantity,
+        total_orders
+    ]
+})
+
+summary_df.to_excel(
+    'summary_report.xlsx',
+    index=False
+)
+
+print("\n================================================")
+print("SUMMARY REPORT SAVED SUCCESSFULLY")
+print("File Name : summary_report.xlsx")
+print("================================================")
+
+# =========================================================
+# SAVE CLEAN DATA
+# =========================================================
+
+df.to_excel(
+    'cleaned_data.xlsx',
+    index=False
+)
+
+print("\nCleaned data saved as cleaned_data.xlsx")
+
+# =========================================================
+# END
+# =========================================================
