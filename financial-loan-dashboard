@@ -1,0 +1,244 @@
+# =========================================================
+# LOAN APPROVAL PREDICTION PROJECT
+# COMPLETE BEGINNER FRIENDLY CODE
+# =========================================================
+
+# =========================================================
+# STEP 1 : IMPORT LIBRARIES
+# =========================================================
+crt pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import confusion_matrix
+
+# =========================================================
+# STEP 2 : LOAD CSV FILE
+# =========================================================
+
+# CHANGE THIS PATH ACCORDING TO YOUR FILE LOCATION
+
+file_path = r"C:/Users/user/Downloads/loan_data.csv"
+
+df = pd.read_csv(file_path)
+
+# =========================================================
+# STEP 3 : SHOW DATA
+# =========================================================
+
+print("\n================ FIRST 5 ROWS ================\n")
+
+print(df.head())
+
+# =========================================================
+# STEP 4 : DATA INFORMATION
+# =========================================================
+
+print("\n================ DATA TYPES ================\n")
+
+print(df.dtypes)
+
+# =========================================================
+# STEP 5 : CHECK MISSING VALUES
+# =========================================================
+
+print("\n================ MISSING VALUES ================\n")
+
+print(df.isnull().sum())
+
+# =========================================================
+# STEP 6 : FILL MISSING VALUES
+# =========================================================
+
+# Fill numeric missing values with mean
+
+df.fillna(df.mean(numeric_only=True), inplace=True)
+
+# =========================================================
+# STEP 7 : REMOVE LOAN_ID COLUMN
+# =========================================================
+
+# Loan_ID is text
+# Machine Learning model cannot process text IDs
+
+if 'Loan_ID' in df.columns:
+
+    df.drop('Loan_ID', axis=1, inplace=True)
+
+# =========================================================
+# STEP 8 : CONVERT TEXT INTO NUMBERS
+# =========================================================
+
+# Convert categorical columns into numeric columns
+
+df = pd.get_dummies(df, drop_first=True)
+
+# =========================================================
+# STEP 9 : CLEANED DATA
+# =========================================================
+
+print("\n================ CLEANED DATA ================\n")
+
+print(df.head())
+
+# =========================================================
+# STEP 10 : FINAL DATA TYPES
+# =========================================================
+
+print("\n================ FINAL DATA TYPES ================\n")
+
+print(df.dtypes)
+
+# =========================================================
+# STEP 11 : INPUT AND OUTPUT
+# =========================================================
+
+# OUTPUT COLUMN
+
+y = df['Loan_Status_Y']
+
+# INPUT COLUMNS
+
+X = df.drop('Loan_Status_Y', axis=1)
+
+# =========================================================
+# STEP 12 : TRAIN TEST SPLIT
+# =========================================================
+
+# 80% Training
+# 20% Testing
+
+X_train, X_test, y_train, y_test = train_test_split(
+
+    X,
+    y,
+
+    test_size=0.2,
+
+    random_state=42
+
+)
+
+# =========================================================
+# STEP 13 : CREATE MACHINE LEARNING MODEL
+# =========================================================
+
+model = LogisticRegression(max_iter=1000)
+
+# =========================================================
+# STEP 14 : TRAIN MODEL
+# =========================================================
+
+model.fit(X_train, y_train)
+
+# =========================================================
+# STEP 15 : PREDICTION
+# =========================================================
+
+y_pred = model.predict(X_test)
+
+# =========================================================
+# STEP 16 : MODEL ACCURACY
+# =========================================================
+
+accuracy = accuracy_score(y_test, y_pred)
+
+print("\n================ MODEL ACCURACY ================\n")
+
+print(f"Accuracy : {accuracy * 100:.2f}%")
+
+# =========================================================
+# STEP 17 : CONFUSION MATRIX
+# =========================================================
+
+cm = confusion_matrix(y_test, y_pred)
+
+print("\n================ CONFUSION MATRIX ================\n")
+
+print(cm)
+
+# =========================================================
+# STEP 18 : VISUALIZATION
+# =========================================================
+
+plt.figure(figsize=(6,5))
+
+plt.imshow(cm, cmap='Blues')
+
+plt.title("Loan Approval Confusion Matrix")
+
+plt.xlabel("Predicted")
+
+plt.ylabel("Actual")
+
+plt.colorbar()
+
+# Add numbers inside matrix
+
+for i in range(len(cm)):
+
+    for j in range(len(cm[0])):
+
+        plt.text(
+
+            j,
+            i,
+            cm[i, j],
+
+            ha='center',
+            va='center',
+
+            color='black'
+
+        )
+
+plt.show()
+
+# =========================================================
+# STEP 19 : SINGLE CUSTOMER PREDICTION
+# =========================================================
+
+print("\n================ SINGLE PREDICTION ================\n")
+
+# Taking one sample row
+
+sample_data = X.iloc[0:1]
+
+prediction = model.predict(sample_data)
+
+# =========================================================
+# STEP 20 : FINAL RESULT
+# =========================================================
+
+if prediction[0] == 1:
+
+    print("LOAN APPROVED")
+
+else:
+
+    print("LOAN REJECTED")
+
+# =========================================================
+# STEP 21 : PROJECT SUMMARY
+# =========================================================
+
+print("\n================ PROJECT SUMMARY ================\n")
+
+print("1. Dataset Loaded")
+
+print("2. Missing Values Cleaned")
+
+print("3. Text Converted Into Numbers")
+
+print("4. Model Trained Successfully")
+
+print("5. Loan Prediction Completed")
+
+print("6. Accuracy Calculated")
+
+# =========================================================
+# END PROJECT
+# =========================================================
