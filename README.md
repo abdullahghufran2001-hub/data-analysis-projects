@@ -244,10 +244,10 @@ This project is licensed under the MIT License.
 
 # 👨‍💻 Author
 
-## Your Name
+## Abdullah ghufran
 Data Analyst | Python Developer | Machine Learning Enthusiast
 
-📧 Email: your-email@example.com  
+📧 Email: abdullahghufran2001@gmail.com 
 🌐 GitHub: https://github.com/your-username
 
 ---
